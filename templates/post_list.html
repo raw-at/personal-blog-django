@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% for obj in qs %}
+
+<!-- ####################### HARD CODED ######################
+<h2>Blog <a href="/posts/{{ obj.id }}/">{{obj.title}}</a></h2>
+-->
+
+<!-- ###################### USING NAMESPACE IN URL.PY ############
+<h2>Blog <a href='{% url "posts:detail" id=obj.id %}'>{{obj.title}}</a></h2>
+-->
+
+
+<h2>Blog--> <a href='{{obj.get_absolute_url}}'>{{obj.title}}</a></h2>
+
+<p>
+  {{obj.content}}
+</p>
+{% endfor %}
+
+{% endblock content %}

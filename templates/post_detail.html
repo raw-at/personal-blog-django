@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block head_title %}{{qs.title}}|{{block.super }}{% endblock head_title %}
+
+{% block style_css %}
+  h2{
+    color:#777777;
+  }
+{% endblock %}
+
+
+
+{% block content %}
+<h2>Blog--> {{qs.title}}</h2>
+<p>
+  {{qs.content}}
+</p>
+
+{% endblock content %}
