@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 
-{% block content %}
+{% block content %}<div class="col-sm-6 col-sm-push-3">
 
+<div class="row">
 {% for obj in qs %}
 
 <!-- ####################### HARD CODED ######################
@@ -11,13 +12,42 @@
 <!-- ###################### USING NAMESPACE IN URL.PY ############
 <h2>Blog <a href='{% url "posts:detail" id=obj.id %}'>{{obj.title}}</a></h2>
 -->
+  <div class="col-sm-12">
+    <div class="card" style="width: 20rem;">
+      <!--<img class="card-img-top" src="..." alt="Card image cap">-->
+      <div class="card-body">
+        <h4 class="card-title"><a href='{{obj.get_absolute_url}}'>{{obj.title}}</a></h4>
+        <p class="card-text">{{obj.content | truncatechars:200}}</p>
+        <a href="{{obj.get_absolute_url}}" class="btn btn-primary">View</a>
+      </div>
+    </div>
+    <hr/>
+  </div>
 
 
-<h2>Blog--> <a href='{{obj.get_absolute_url}}'>{{obj.title}}</a></h2>
 
-<p>
-  {{obj.content}}
-</p>
 {% endfor %}
 
+
+
+</div>
+<div class="pagination">
+    <span class="step-links">
+        {% if qs.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ qs.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ qs.number }} of {{ qs.paginator.num_pages }}.
+        </span>
+
+        {% if qs.has_next %}
+            <a href="?page={{ Qs.next_page_number }}">next</a>
+            <a href="?page={{ qs.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+</div>
 {% endblock content %}
