@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block head_title %}{{qs.title}}|{{block.super }}{% endblock head_title %}
-
+{% load crispy_forms_tags %}
+{% load urlify %}
 {% block style_css %}
   h2{
     color:#777777;
@@ -10,10 +11,50 @@
 
 
 {% block content %}
-<div class="col-sm-10 col-sm-offset-2">
-<h2>Blog--> {{qs.title}}  <small style="color:black">{{qs.timestamp}}</small></h2>
-<p>
-  {{qs.content | linebreaks}}
-</p>
-</div>
+
+<div class="row">
+  <div class="col-sm-12">
+
+      <h4><a href='{{qs.get_absolute_url}}'>{{qs.title}}</a>
+        <small>
+          {% if qs.draft %}
+            <span style="color:red">draft</span>
+          {% endif %}
+          {{qs.publish}}</small>
+      </h4>
+            {% if qs.image %}
+              <img class="img-thumbnail img-responsive" src="{{qs.image.url}}" alt="Card image cap">
+            {% endif %}
+      <br><br>
+      <div class="post-detail-item">
+        {{qs.get_markdown}}
+      </div>
+
+      <a href="https://www.facebook.com/sharer/sharer.php?u={{request.build_absolute_uri}}">
+      Share on Facebook
+      </a>
+      <a href="https://twitter.com/home?status={{qs.content | urlify}}%20d{{request.build_absolute_uri}}">
+      Share on Twitter
+      </a>
+      <div>
+          <p class="lead">Comments</p><hr/>
+          <form method="POST" action="">{% csrf_token %}
+          {{ comment_form | crispy }}
+          <input type="submit" value="Comment" class="btn btn-default" />
+          <form>
+          {% for comment in comments %}
+          <hr/>
+          <blockquote>
+            <p>{{comment.content}} on <span style="color:red">{{comment.timestamp | timesince }} ago</span></p>
+            <footer>via <cite title="Comment Writer">{{comment.user}}</cite></footer>
+
+          </blockquote>
+          {%endfor%}
+
+      </div>
+
+
+  </div>
+
+
 {% endblock content %}

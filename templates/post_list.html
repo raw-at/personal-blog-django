@@ -1,41 +1,45 @@
 {% extends "base.html" %}
 
-{% block content %}<div class="col-sm-6 col-sm-push-3">
+{% block content %}<div class="col-sm-12">
 
 <div class="row">
-{% for obj in qs %}
+    <form method="GET" action="">
+      <div class="input-group">
 
-<!-- ####################### HARD CODED ######################
-<h2>Blog <a href="/posts/{{ obj.id }}/">{{obj.title}}</a></h2>
--->
+          <input class="form-control" type="text" name = "q" placeholder="search post" value='{{ request.GET.q }}'/>
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="submit">Search <i class="fa fa-search"></i></button>
+          </span>
+      </div>
 
-<!-- ###################### USING NAMESPACE IN URL.PY ############
-<h2>Blog <a href='{% url "posts:detail" id=obj.id %}'>{{obj.title}}</a></h2>
--->
-  <div class="col-sm-12">
-    <div class="card" style="width: 20rem;">
-      <!--<img class="card-img-top" src="..." alt="Card image cap">-->
-      <div class="card-body">
-        <h4 class="card-title"><a href='{{obj.get_absolute_url}}'>{{obj.title}}</a></h4>
-        <p class="card-text">{{obj.content | truncatechars:200}}</p>
-        <a href="{{obj.get_absolute_url}}" class="btn btn-primary">View</a>
+    </form>
+
+  {% for obj in qs %}
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="thumbnail">
+          {% if obj.image %}
+           <img src='{{ obj.image.url }}' class='img-responsive' />
+          {% endif %}
+        <div class="caption post-detail-item">
+          {% if obj.draft %}<h3>Staff only: Draft</h3>{% endif %} {% if obj.publish > today %}<h3>Staff Only: Future Post</h3>{% endif %}
+          <h3><a href='{{ obj.get_absolute_url }}'>{{ obj.title }}</a> <small>{{ obj.publish }}</small></h3>
+          {% if obj.user.get_full_name %}<p>Author: {{ obj.user.get_full_name }}</p>{% endif %}
+          <p>{{ obj.get_markdown | truncatechars_html:100}}</p>
+          <p><a href="{{ obj.get_absolute_url }}" class="btn btn-primary" role="button">View</a></p>
+        </div>
       </div>
     </div>
-    <hr/>
+  <hr/>
   </div>
-
-
-
-{% endfor %}
-
+  {% endfor %}
 
 
 </div>
 <div class="pagination">
     <span class="step-links">
         {% if qs.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ qs.previous_page_number }}">previous</a>
+            <a href="?page={{ qs.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{%endif%}">previous</a>
         {% endif %}
 
         <span class="current">
@@ -43,8 +47,7 @@
         </span>
 
         {% if qs.has_next %}
-            <a href="?page={{ Qs.next_page_number }}">next</a>
-            <a href="?page={{ qs.paginator.num_pages }}">last &raquo;</a>
+            <a href="?page={{ qs.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{%endif%}">next</a>
         {% endif %}
     </span>
 </div>

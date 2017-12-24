@@ -37,8 +37,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'posts' #my custom app posts
+    'posts', #my custom app posts
+    'comments',
+    #3rd party apps
+    'crispy_forms',
+    'pagedown', #custom writing editor tools
+    'markdown_deux'
 ]
+
+CRISPY_TEMPLATE_PACK = "bootstrap3"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -127,4 +134,5 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR),"static_cdn")
 #User uploaded files in media cdn
+MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR),"media_cdn")
