@@ -37,11 +37,21 @@
 
 
 <div class="row">
-<div class="col-sm-12"><h1 style="text-align:center"><a href="/posts">Blog</a></h1></div>
 </div>
 {% include "message.html" %}
 
 <div class="container">
+  <hr/>
+  <ol class="breadcrumb">
+    <li><a href="{% url 'posts:list' %}">Home</a></li>
+    {% block post_detail_link %}{%endblock%}
+    {% if not request.user.is_authenticated %}
+    <li class="pull-right"><a href="{% url 'register' %}">Register</a></li>
+    <li class="pull-right"><a href="{% url 'login' %}">Login</a></li>
+    {% else %}
+    <li class="pull-right"><a href="{% url 'logout' %}">Logout</a></li>
+    {% endif %}
+  </ol>
 {% block content %}
 
 {% endblock content %}
