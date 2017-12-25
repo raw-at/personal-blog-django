@@ -10,6 +10,7 @@ from django.contrib.contenttypes.models import ContentType
 from comments.models import Comment
 from comments.form import CommentForm
 
+#from .utils import get_read_time
 # Create your views here.
 
 # FUNCTION BASED VIEWS
@@ -46,6 +47,7 @@ def post_detail(request,slug=None):
     #object_id = instance.id
     #comments = Comment.objects.filter(content_type=content_type,object_id=object_id)
     #comments = Comment.objects.filter_by_instance(instance)
+    #print(get_read_time(instance.get_markdown()))
 
     initial_data = {
         "content_type":instance.get_content_type,
@@ -58,15 +60,27 @@ def post_detail(request,slug=None):
         content_type = ContentType.objects.get(model=c_type)
         object_id = comment_form.cleaned_data.get('object_id')
         content_data = comment_form.cleaned_data.get('content')
+        parent_obj = None
+        try:
+            parent_id = int(request.POST.get('parent_id'))
+        except:
+            parent_id = None
+
+        if parent_id is not None:
+            parent_qs = Comment.objects.filter(id=parent_id)
+            if parent_qs.exists() and parent_qs.count()==1:
+                parent_obj = parent_qs.first()
+
         new_comment,created = Comment.objects.get_or_create(
 
             user = request.user,
             content_type = content_type,
             object_id = object_id,
-            content = content_data
+            content = content_data,
+            parent = parent_obj
 
         )
-
+        return HttpResponseRedirect(new_comment.content_object.get_absolute_url())
 
 
 

@@ -21,6 +21,17 @@
             <span style="color:red">draft</span>
           {% endif %}
           {{qs.publish}}</small>
+
+          <p style="color:red"> Average Read Time :
+
+            {% if qs.read_time|time:"i" <= "01" %} < 1 minute
+            {% else %} {{qs.read_time|time:"i"}} minutes
+
+             {%endif%}
+
+
+
+          </p>
       </h4>
             {% if qs.image %}
               <img class="img-thumbnail img-responsive" src="{{qs.image.url}}" alt="Card image cap">
@@ -41,14 +52,39 @@
           <form method="POST" action="">{% csrf_token %}
           {{ comment_form | crispy }}
           <input type="submit" value="Comment" class="btn btn-default" />
-          <form>
+          </form>
           {% for comment in comments %}
           <hr/>
           <blockquote>
             <p>{{comment.content}} on <span style="color:red">{{comment.timestamp | timesince }} ago</span></p>
-            <footer>via <cite title="Comment Writer">{{comment.user}}</cite></footer>
+            <footer>via <cite title="Comment Writer">{{comment.user}}</cite>
+              {% if comment.children.count > 0 %}{{ comment.children.count }} Comments | {% endif %}
+              <a  href="#" class="comment-reply-btn"> Reply</a> | <a  href="{{comment.get_absolute_url}}"> Thread</a>
+            </footer>
+
+            <div class="comment-reply" style="display:none">
+                {%for child_comment in comment.children %}
+                <blockquote>
+
+                  <p>{{child_comment.content}} on <span style="color:red">{{child_comment.timestamp | timesince }} ago</span></p>
+                  <footer>via <cite title="Comment Writer">{{child_comment.user}}</cite>
+
+                  </footer>
+
+                </blockquote>
+                {%endfor%}
+
+
+                <form method="POST" action=".">{% csrf_token %}
+                  {{ comment_form | crispy }}
+                  <input type="hidden" name="parent_id" value="{{comment.id}}"/>
+                  <input type="submit" value="Reply" class="btn btn-default" />
+                </form>
+
+            </div>
 
           </blockquote>
+          <hr/>
           {%endfor%}
 
       </div>

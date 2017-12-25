@@ -13,7 +13,7 @@ from markdown_deux import markdown
 #Example of Model Manager
 #Post.objects.all()
 from comments.models import Comment
-
+from .utils import get_read_time
 
 class PostManager(models.Manager):
     def active(self,*args,**kwrags):
@@ -39,6 +39,7 @@ class Post(models.Model):
     height_field = models.IntegerField(default=0)
     draft =  models.BooleanField(default=True)
     publish = models.DateField(auto_now=False , auto_now_add=False)
+    read_time = models.TimeField(null=True,blank=True)
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add = True,auto_now = False)
     updated = models.DateTimeField(auto_now_add = False,auto_now = True)
@@ -85,6 +86,8 @@ def create_slug(instance,new_slug = None):
 def pre_save_post_receiver(sender,instance,*args,**kwargs):
     if not instance.slug:
         instance.slug = create_slug(instance)
-
+    if instance.content:
+        read_time = get_read_time(instance.get_markdown())
+        instance.read_time = read_time
 
 pre_save.connect(pre_save_post_receiver,sender=Post)

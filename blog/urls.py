@@ -19,11 +19,15 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 
-from posts import urls
+from posts import urls as posts_urls
+from comments import urls as comments_urls
+from accounts.views import (login_view,register_view,logout_view)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^posts/',include(urls,namespace="posts")),
+    url(r'^posts/',include(posts_urls,namespace="posts")),
+    url(r'^comments/',include(comments_urls,namespace="comments")),
+    url(r'^login/',login_view,name="login"),
 ]
 
 if settings.DEBUG:

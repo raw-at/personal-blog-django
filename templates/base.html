@@ -37,7 +37,7 @@
 
 
 <div class="row">
-<div class="col-sm-12"><h1 style="text-align:center"><a href="{{url}}">Blog</a></h1></div>
+<div class="col-sm-12"><h1 style="text-align:center"><a href="/posts">Blog</a></h1></div>
 </div>
 {% include "message.html" %}
 
@@ -61,6 +61,8 @@
 
 
 <script src='https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.5/marked.min.js'></script>
+
+
 <script type="text/javascript">
 $(document).ready(function(){
   $('.content-markdown').each(function(){
@@ -113,6 +115,10 @@ $(document).ready(function(){
 
 
 
+})
+$(document).on('click',".comment-reply-btn",function(event){
+    event.preventDefault();
+    $(this).parent().next(".comment-reply").fadeToggle();
 })
 
 </script>
